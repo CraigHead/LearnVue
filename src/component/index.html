@@ -6,7 +6,7 @@
     <title>My first Vue app</title>
     <script src="https://unpkg.com/vue"></script>
     <style type="text/css">
-        
+
     </style>
 </head>
 <body>
@@ -18,32 +18,45 @@
             We also need to provide each component with a "key",
             which will be explained later.
             -->
-            <todo-item
-                v-for="item in groceryList"
-                v-bind:todo="item"
-                v-bind:key="item.id"></todo-item>
+            <todo-item v-for="item in groceryList"
+                       v-bind:todo="item"
+                       v-bind:key="item.id"></todo-item>
         </ol>
     </div>
-<script>
-    /* Passing Data with Props
-       Every component instance has its own isolated scope. This means you cannot (and should not) directly reference parent data in a child component’s template. Data can be passed down to child components using props.
-        A prop is a custom attribute for passing information from parent components. A child component needs to explicitly declare the props it expects to receive using the props option */
-    Vue.component('todo-item',
-        {
-            props: ['todo'],
-            template: '<li>{{ todo.text }}</li>'
-        });
 
-    var app = new Vue({
-        el: '#app',
-        data: {
-            groceryList: [
-                { id: 0, text: 'Vegetables' },
-                { id: 1, text: 'Cheese' },
-                { id: 2, text: 'Whatever else humans are supposed to eat' }
-            ]
-        }
-    });
-</script>
+    <!--
+
+    Relation to Custom Elements
+
+    You may have noticed that Vue components are very similar to Custom Elements, which are part of the Web Components Spec. That’s because Vue’s component syntax is loosely modeled after the spec. For example, Vue components implement the Slot API and the is special attribute. However, there are a few key differences:
+
+    The Web Components Spec is still in draft status, and is not natively implemented in every browser. In comparison, Vue components don’t require any polyfills and work consistently in all supported browsers (IE9 and above). When needed, Vue components can also be wrapped inside a native custom element.
+
+    Vue components provide important features that are not available in plain custom elements, most notably cross-component data flow, custom event communication and build tool integrations.
+
+
+    -->
+
+    <script>
+        /* Passing Data with Props
+           Every component instance has its own isolated scope. This means you cannot (and should not) directly reference parent data in a child component’s template. Data can be passed down to child components using props.
+            A prop is a custom attribute for passing information from parent components. A child component needs to explicitly declare the props it expects to receive using the props option */
+        Vue.component('todo-item',
+            {
+                props: ['todo'],
+                template: '<li>{{ todo.text }}</li>'
+            });
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                groceryList: [
+                    { id: 0, text: 'Vegetables' },
+                    { id: 1, text: 'Cheese' },
+                    { id: 2, text: 'Whatever else humans are supposed to eat' }
+                ]
+            }
+        });
+    </script>
 </body>
 </html>
