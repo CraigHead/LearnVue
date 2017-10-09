@@ -5,116 +5,16 @@
     <meta charset="utf-8" />
     <title>My first Vue app</title>
     <script src="https://unpkg.com/vue"></script>
-    <style>
-        .fade-enter-active, .fade-leave-active {
-            transition: opacity .5s;
-        }
-
-        .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-            opacity: 0;
-        }
+    <style type="text/css">
+        
     </style>
 </head>
 <body>
     <div>
-        <div id="app">
-            {{ message }}
-        </div>
         
-        <!-- The v-bind attribute you are seeing is called a directive. Directives are prefixed with v- to indicate that they are special attributes provided by Vue, and as you may have guessed, they apply special reactive behavior to the rendered DOM. Here, it is basically saying “keep this element’s title attribute up-to-date with the message property on the Vue instance.”
-        If you open up your JavaScript console again and enter app2.message = 'some new message', you’ll once again see that the bound HTML - in this case the title attribute - has been updated.-->
-        <div id="app-2">
-            <span v-bind:title="message">
-                Hover your mouse over me for a few seconds
-                to see my dynamically bound title!
-            </span>
-        </div>
-        
-        
-        <!-- Go ahead and enter app3.seen = false in the console. You should see the message disappear.
-             This example demonstrates that we can bind data to not only text and attributes, but also the structure of the DOM. Moreover, Vue also provides a powerful transition effect system that can automatically apply transition effects when elements are inserted/updated/removed by Vue.-->
-        <div id="app-3">
-            <button v-on:click="seen = !seen">
-                Toggle
-            </button>
-            <transition name="fade">
-                <span v-if="seen">Now you see me</span>
-            </transition>
-        </div>
-        
-        
-        <!-- the v-for directive can be used for displaying a list of items using the data from an Array -->
-        <div id="app-4">
-            <ol>
-                <li v-for="todo in todos">
-                    {{ todo.text }}
-                </li>
-            </ol>
-        </div>
-        
-        <!-- To let users interact with your app, we can use the v-on directive to attach event listeners that invoke methods on our Vue instances -->
-        <div id="app-5">
-            <p>{{ message }}</p>
-            <button v-on:click="reverseMessage">Reverse Message</button>
-        </div>
-        
-        <!-- Vue also provides the v-model directive that makes two-way binding between form input and app state a breeze -->
-        <div id="app-6">
-            <p>{{ message }}</p>
-            <input v-model="message">
-        </div>
     </div>
     <script>
-        var app = new Vue({
-            el: '#app',
-            data: {
-                message: 'Hello Vue!'
-            }
-        });
-
-        var app2 = new Vue({
-            el: '#app-2',
-            data: {
-                message: 'You loaded this page on ' + new Date().toLocaleString()
-            }
-        });
-
-        var app3 = new Vue({
-            el: '#app-3',
-            data: {
-                seen: true
-            }
-        });
-
-        var app4 = new Vue({
-            el: '#app-4',
-            data: {
-                todos: [
-                    { text: 'Learn JavaScript' },
-                    { text: 'Learn Vue' },
-                    { text: 'Build something awesome' }
-                ]
-            }
-        });
-
-        var app5 = new Vue({
-            el: '#app-5',
-            data: {
-                message: 'Hello Vue.js!'
-            },
-            methods: {
-                reverseMessage: function () {
-                    this.message = this.message.split('').reverse().join('')
-                }
-            }
-        });
-
-        var app6 = new Vue({
-            el: '#app-6',
-            data: {
-                message: 'Hello Vue!'
-            }
-        });
+        
     </script>
 </body>
 </html>
