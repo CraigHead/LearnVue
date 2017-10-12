@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My first Vue app</title>
+    <script src="../scripts/vue.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <!-- Guided from https://vuejs.org/v2/guide/computed.html -->
+   
+<div id="app">
+    <!--
+        In-template expressions are very convenient, but they are meant for simple operations. 
+        Putting too much logic in your templates can make them bloated and hard to maintain. 
+        For example
+        -->
+        {{ message.split('').reverse().join('') }}
+    
+
+    
+
+</div>
+
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: {
+                message: 'https://google.com'
+            }
+        });
+        
+            
+    </script>
+
+
+</body>
+</html>
