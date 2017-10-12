@@ -26,6 +26,58 @@
 
     <!-- # Arguments -->
 
+    <!-- Some directives can take an “argument”, denoted by a colon after the directive name. 
+        For example, the v-bind directive is used to reactively update an HTML attribute -->
+
+    <a v-bind:href="url">{{ url }}</a>
+
+    <!-- 
+        Here href is the argument, which tells the v-bind directive to bind the element’s href attribute to the value of the expression url
+        -->
+
+    <!--
+        Another example is the v-on directive, which listens to DOM events.
+        Here the argument is the event name to listen to. We will talk about event handling in more detail too
+        -->
+
+    <a v-on:click="doSomething">click me</a>
+
+    <!-- # Modifiers -->
+
+    <!-- 
+        Modifiers are special postfixes denoted by a dot, which indicate that a directive should be bound in some special way. 
+        For example, the .prevent modifier tells the v-on directive to call event.preventDefault() on the triggered event
+        -->
+
+    <form v-on:submit.prevent="onSubmit"></form>
+
+    <!-- # Shorthands -->
+
+    <!-- 
+        The v- prefix serves as a visual cue for identifying Vue-specific attributes in your templates. 
+        This is useful when you are using Vue.js to apply dynamic behavior to some existing markup, but can feel verbose for some frequently used directives. 
+        At the same time, the need for the v- prefix becomes less important when you are building an SPA where Vue.js manages every template. 
+        Therefore, Vue.js provides special shorthands for two of the most often used directives, v-bind and v-on
+        -->
+
+    <!-- v-bind Shorthand -->
+
+    <!-- full syntax -->
+    <a v-bind:href="url">{{ url }}</a>
+    <!-- shorthand -->
+    <a :href="url">{{ url }}</a>
+
+
+    <!-- v-on Shorthand -->
+
+    <!-- full syntax -->
+    <a v-on:click="doSomething">click me</a>
+    <!-- shorthand -->
+    <a @click="doSomething">click me</a>
+
+    <!-- They may look a bit different from normal HTML, but : and @ are valid chars for attribute names and all Vue.js supported browsers can parse it correctly. 
+        In addition, they do not appear in the final rendered markup. 
+        The shorthand syntax is totally optional, but you will likely appreciate it when you learn more about its usage later. -->
 
 </div>
 
@@ -33,11 +85,18 @@
         vm = new Vue({
             el: '#app',
             data: {
-                seen: false,
+                seen: true,
+                url: 'https://google.com'
                 
-                
+            },
+            methods: {
+                doSomething: function (event) {
+                    console.log('clicked!');
+                }
             }
         });
+        
+            
     </script>
 
 
