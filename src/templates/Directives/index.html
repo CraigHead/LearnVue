@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My first Vue app</title>
+    <script src="../scripts/vue.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <!-- Guided from https://vuejs.org/v2/guide/syntax.html -->
+    <!--
+        Directives are special attributes with the v- prefix. 
+        Directive attribute values are expected to be a single JavaScript expression (with the exception for v-for, which will be discussed later). 
+        A directive’s job is to reactively apply side effects to the DOM when the value of its expression changes. 
+        -->
+
+
+<div id="app">
+    <!--
+        Let’s review the example we saw in the introduction.
+        Here, the v-if directive would remove/insert the <p> element based on the truthiness of the value of the expression seen.
+        -->
+    <p v-if="seen">Now you see me</p>
+
+    <!-- # Arguments -->
+
+
+</div>
+
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: {
+                seen: false,
+                
+                
+            }
+        });
+    </script>
+
+
+</body>
+</html>

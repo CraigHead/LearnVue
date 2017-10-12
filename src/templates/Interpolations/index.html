@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My first Vue app</title>
+    <script src="../scripts/vue.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <!-- Guided from https://vuejs.org/v2/guide/syntax.html -->
+    <!--
+    Vue.js uses an HTML-based template syntax that allows you to declaratively bind the rendered DOM to the underlying Vue instance’s data.
+    All Vue.js templates are valid HTML that can be parsed by spec-compliant browsers and HTML parsers.
+
+    Under the hood, Vue compiles the templates into Virtual DOM render functions. Combined with the reactivity system, Vue is able to intelligently figure out the minimal amount
+    of components to re-render and apply the minimal amount of DOM manipulations when the app state changes.
+        -->
+
+
+<div id="app">
+    <!-- # Text -->
+
+    <!-- The most basic form of data binding is text interpolation using the “Mustache” syntax (double curly braces): -->
+
+    <span>Message: {{ msg }}</span>
+    
+
+    <!-- 
+        The mustache tag will be replaced with the value of the msg property on the corresponding data object. 
+        It will also be updated whenever the data object’s msg property changes.
+
+        You can also perform one-time interpolations that do not update on data change by using the v-once directive, but keep in mind this will also affect any binding on the same node 
+    -->
+
+    <span v-once>This will never change: {{ msg }}</span>
+
+    <!-- # Raw HTML -->
+
+    <!-- 
+        The double mustaches interprets the data as plain text, not HTML. In order to output real HTML, you will need to use the v-html directive:
+    -->
+<div v-html="rawHtml"></div>
+    <!-- 
+        The contents of this div will be replaced with the value of the rawHtml property, interpreted as plain HTML - data bindings are ignored. 
+        
+        ** Note that you cannot use v-html to compose template partials, because Vue is not a string-based templating engine. 
+        Instead, components are preferred as the fundamental unit for UI reuse and composition.
+
+        ***** Dynamically rendering arbitrary HTML on your website can be very dangerous because it can easily lead to XSS vulnerabilities. 
+        Only use HTML interpolation on trusted content and never on user-provided content.
+        -->
+
+    <!-- # Attributes -->
+
+    <!-- 
+        Mustaches cannot be used inside HTML attributes, instead use a v-bind directive:
+        -->
+    <div v-bind:id="dynamicId">{{ dynamicId }}</div>
+
+    <!-- 
+        It also works for boolean attributes - the attribute will be removed if the condition evaluates to a falsy value:
+        -->
+    <button v-bind:disabled="isButtonDisabled">Button</button>
+
+    <!-- # Using Javascript Expressions -->
+
+    <!-- 
+        So far we’ve only been binding to simple property keys in our templates. 
+        But Vue.js actually supports the full power of JavaScript expressions inside all data bindings
+        -->
+
+    <div>
+        {{ number + 1 }}
+    </div>
+    <div>
+        {{ ok ? 'YES' : 'NO' }}
+    </div>
+    <div>
+        {{ message.split('').reverse().join('') }}
+    </div>
+
+    <div v-bind:id="'list-' + id"></div>
+
+    <!--
+        These expressions will be evaluated as JavaScript in the data scope of the owner Vue instance. 
+        One restriction is that each binding can only contain one single expression, so the following will NOT work
+        -->
+    <!-- this is a statement, not an expression: -->
+    <!-- will produce compilation error 
+        - avoid using JavaScript keyword as property name: "var" in expression {{ var a = 1 }}
+    -->
+    <!--{{ var a = 1 }}-->
+
+    <!-- flow control won't work either, use ternary expressions -->
+    <!-- will produce compiliation error
+        avoid using JavaScript keyword as property name: "if" in expression {{ if (ok) { return message } }}
+        -->
+    <!--{{ if (ok) { return message } }}-->
+
+    <!-- 
+        Template expressions are sandboxed and only have access to a whitelist of globals such as Math and Date. 
+        You should not attempt to access user defined globals in template expressions.
+        -->
+
+</div>
+
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: {
+                msg: 'test',
+                rawHtml: '<span style="color:red">raw html</span>',
+                dynamicId: 5,
+                isButtonDisabled: true,
+                number : 2,
+                ok: true,
+                message: 'hello world!',
+                id: 9
+                
+            }
+        });
+    </script>
+
+
+</body>
+</html>
