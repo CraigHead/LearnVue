@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My first Vue app</title>
+    <script src="../scripts/vue.js"></script>
+    <style type="text/css">
+        .divider {
+            border-top: red solid 5px;
+            list-style: none;
+            
+        }
+         
+    </style>
+</head>
+<body>
+
+    <!-- Guided from https://vuejs.org/v2/guide/list.html -->
+    <!-- Sometimes we want to display a filtered or sorted version of an array without actually mutating or resetting the original data.
+        In this case, you can create a computed property that returns the filtered or sorted array.
+        -->
+
+    <div id="example-1">
+        <ol>
+            <li v-for="n in evenNumbers">{{ n }}</li>
+        </ol>
+
+    </div>
+
+
+    <script>
+        vm = new Vue({
+            el: '#example-1',
+            data: {
+                numbers: [1, 2, 3, 4, 5]
+                
+            },
+            computed: {
+                evenNumbers: function () {
+                    return this.numbers.filter(function (number) {
+                        return number % 2 === 0
+                    })
+                }
+            }
+        });
+
+    </script>
+
+
+    <!-- In situations where computed properties are not feasible (e.g. inside nested v-for loops), you can use a method -->
+    <div id="example-2">
+        <ol>
+            <li v-for="n in even(numbers)">{{ n }}</li>
+        </ol>
+
+        <!-- v-for can also take an integer. In this case it will repeat the template that many times. -->
+
+        <div>
+            <span v-for="n in 10">{{ n }} </span>
+        </div>
+
+        <!-- v-for on a <template> -->
+        <!-- Similar to template v-if, you can also use a <template> tag with v-for to render a block of multiple elements. -->
+
+        <ul>
+            <template v-for="item in items">
+                <li>{{ item.msg }}</li>
+                <li class="divider"></li>
+            </template>
+        </ul>
+
+    </div>
+
+
+    <script>
+        vm2 = new Vue({
+            el: '#example-2',
+            data: {
+                numbers: [1, 2, 3, 4, 5],
+                items: [
+                    { msg: 'Foo' },
+                    { msg: 'Bar' }
+                ]
+            },
+            methods: {
+                even: function (numbers) {
+                    return numbers.filter(function (number) {
+                        return number % 2 === 0
+                    })
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My first Vue app</title>
+    <script src="../scripts/vue.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+
+    <!-- Guided from https://vuejs.org/v2/guide/list.html -->
+    <!-- # Mutation Methods
+
+    Vue wraps an observed array’s mutation methods so they will also trigger view updates. The wrapped methods are -->
+    <!--
+    push()
+    pop()
+    shift()
+    unshift()
+    splice()
+    sort()
+    reverse()
+    -->
+    <!-- You can open the console and play with the items array by calling their mutation methods. For example: example1.items.push({ message: 'Baz' })-->
+<div id="app">
+    <ol>
+        <li v-for="item in items">{{ item.message }}</li>
+    </ol>
+
+</div>
+
+
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: {
+                items: [
+                    { message: 'Foo' },
+                    { message: 'Bar' }
+                ]
+            }
+        });
+
+        /* 
+        # Replacing an Array */
+
+        /*
+        Mutation methods, as the name suggests, mutate the original array they are called on.
+        In comparison, there are also non-mutating methods, e.g. filter(), concat() and slice(), which do not mutate the original array but always return a new array.
+        When working with non-mutating methods, you can replace the old array with the new one
+        */
+
+        //vm.items = vm.items.filter(function (item) {
+        //    return item.message.match(/Foo/)
+        //})
+
+        /*
+        You might think this will cause Vue to throw away the existing DOM and re-render the entire list - luckily, that is not the case.
+        Vue implements some smart heuristics to maximize DOM element reuse, so replacing an array with another array containing overlapping objects is a very efficient operation.
+        */
+
+        /* # Caveats */
+
+        /*
+        Due to limitations in JavaScript, Vue cannot detect the following changes to an array:
+        
+        1. When you directly set an item with the index, e.g. vm.items[indexOfItem] = newValue
+        2. When you modify the length of the array, e.g. vm.items.length = newLength
+
+        To overcome caveat 1, both of the following will accomplish the same as vm.items[indexOfItem] = newValue, but will also trigger state updates in the reactivity system:
+
+        */
+        var indexOfItem = 1;
+        var newValue = { message: 'Here' };
+        // Vue.set
+        Vue.set(vm.items, indexOfItem, newValue);
+
+        // Array.prototype.splice
+        vm.items.splice(indexOfItem, 1, newValue);
+
+
+        /* To deal with caveat 2, you can use splice: */
+
+        var newLength = 1;
+        vm.items.splice(newLength);
+
+        /*
+        Object Change Detection Caveats
+
+        Again due to limitations of modern JavaScript, Vue cannot detect property addition or deletion. For example:
+
+        var vm = new Vue({
+          data: {
+            a: 1
+          }
+        })
+         `vm.a` is now reactive
+
+        vm.b = 2
+         `vm.b` is NOT reactive
+
+        */
+
+    </script>
+
+
+<div id="app2">
+    {{ userProfile.name }} {{ userProfile.age }} {{ userProfile.favoriteColor }}
+
+</div>
+
+
+<script>
+    /*
+    Vue does not allow dynamically adding new root-level reactive properties to an already created instance.
+    However, it’s possible to add reactive properties to a nested object using the Vue.set(object, key, value)
+    */
+
+    vm2 = new Vue({
+        el: '#app2',
+        data: {
+            userProfile: {
+                name: 'Anika'
+            }
+        }
+    });
+
+    /*
+    You could add a new age property to the nested userProfile object with
+     */
+
+    Vue.set(vm2.userProfile, 'age', 27);
+
+    /*
+    You can also use the vm.$set instance method, which is an alias for the global Vue.set:
+    */
+
+    vm2.$set(vm2.userProfile, 'age', 38);
+
+    /*
+    Sometimes you may want to assign a number of new properties to an existing object, for example using Object.assign() or _.extend().
+    In such cases, you should create a fresh object with properties from both objects.
+    So instead of
+    */
+
+    Object.assign(vm2.userProfile,
+        {
+            age: 27,
+            favoriteColor: 'Vue Green'
+        });
+
+
+    /* You would add new, reactive properties with: */
+    vm2.userProfile = Object.assign({},
+        vm2.userProfile,
+        {
+            age: 27,
+            favoriteColor: 'Vue Green'
+        });
+
+</script>
+
+</body>
+</html>
