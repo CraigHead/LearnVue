@@ -45,8 +45,8 @@
             <input type="checkbox" id="checkbox" v-model="checked">
             <label for="checkbox">{{ checked }}</label>
         </div>
-        
-        
+
+
         <!-- Multiple checkboxes, bound to the same Array -->
         <div>
             <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
@@ -58,7 +58,7 @@
             <br>
             <span>Checked names: {{ checkedNames }}</span>
         </div>
-        
+
         <!-- # Radio -->
         <div>
             <input type="radio" id="one" value="One" v-model="picked">
@@ -69,7 +69,7 @@
             <br>
             <span>Picked: {{ picked }}</span>
         </div>
-        
+
         <!-- # Select -->
         <div>
             <select v-model="selected">
@@ -80,6 +80,29 @@
             </select>
             <span>Selected: {{ selected }}</span>
         </div>
+
+        <!-- If the initial value of your v-model expression does not match any of the options, the <select> element will render in an “unselected” state.
+        On iOS this will cause the user not being able to select the first item because iOS does not fire a change event in this case.
+        It is therefore recommended to provide a disabled option with an empty value, as demonstrated in the example above. -->
+        
+        <!-- Multiple select (bound to Array) -->
+
+        <select v-model="selected" multiple>
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+        </select>
+        <br>
+        <span>Selected: {{ selected }}</span>
+        
+        <!-- Dynamic options rendered with v-for: -->
+
+        <select v-model="selected">
+            <option v-for="option in options" v-bind:value="option.value">
+                {{ option.text }}
+            </option>
+        </select>
+        <span>Selected: {{ selected }}</span>
 
     </div>
 
@@ -92,7 +115,12 @@
                 checked: false,
                 checkedNames: [],
                 picked: null,
-                selected: null
+                selected: null,
+                options: [
+                    { text: 'One', value: 'A' },
+                    { text: 'Two', value: 'B' },
+                    { text: 'Three', value: 'C' }
+                ]
             }
         });
 
