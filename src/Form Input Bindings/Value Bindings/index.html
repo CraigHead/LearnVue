@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My first Vue app</title>
+    <script src="../scripts/vue.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <!-- Guided from https://vuejs.org/v2/guide/forms.html#Value-Bindings -->
+
+    <div id="app">
+        <!-- For radio, checkbox and select options, the v-model binding values are usually static strings (or booleans for checkbox) -->
+        <div>
+            <!-- `picked` is a string "a" when checked -->
+            <!--<input type="radio" v-model="picked" value="a">-->
+            {{ picked }}
+            <!-- `toggle` is either true or false -->
+            <!--<input type="checkbox" v-model="toggle">-->
+            {{ toggle }}
+            <!-- `selected` is a string "abc" when selected -->
+            <!--<select v-model="selected">
+                <option value="abc">ABC</option>
+            </select>-->
+            {{ selected }}
+            {{ a }} {{ b }}
+        </div>
+        <!-- But sometimes we may want to bind the value to a dynamic property on the Vue instance. 
+        We can use v-bind to achieve that. In addition, using v-bind allows us to bind the input value to non-string values. -->
+        
+        <input
+            type="checkbox"
+            v-model="toggle"
+            v-bind:true-value="a"
+            v-bind:false-value="b">
+        <!--  when checked:
+                vm.toggle === vm.a
+              when unchecked:
+                vm.toggle === vm.b
+        -->
+        
+        
+        <input type="radio" v-model="pick" v-bind:value="a">
+        <!-- when checked: vm.pick === vm.a-->
+        
+        <select v-model="selected">
+            <!-- inline object literal -->
+            <option v-bind:value="{ number: 123 }">123</option>
+        </select>
+        
+        <!-- 
+            // when selected:
+                typeof vm.selected // => 'object'
+                vm.selected.number // => 123
+        
+            -->
+
+    </div>
+
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: {
+                a: true,
+                b: false,
+                picked: null,
+                toggle: false,
+                selected: null,
+                pick: null
+                
+            }
+        });
+
+    </script>
+
+</body>
+</html>
