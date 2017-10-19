@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My first Vue app</title>
+    <script src="../scripts/vue.js"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <!-- Guided from https://vuejs.org/v2/guide/forms.html#Basic-Usage -->
+
+    <div id="app">
+        <!-- You can use the v-model directive to create two-way data bindings on form input and textarea elements.
+        It automatically picks the correct way to update the element based on the input type.
+        Although a bit magical, v-model is essentially syntax sugar for updating data on user input events, plus special care for some edge cases.
+
+        *** v-model will ignore the initial value, checked or selected attributes found on any form elements.
+        It will always treat the Vue instance data as the source of truth.
+        You should declare the initial value on the JavaScript side, inside the data option of your component.
+
+        *** For languages that require an IME (Chinese, Japanese, Korean etc.), you’ll notice that v-model doesn’t get updated during IME composition.
+        If you want to cater for these updates as well, use input event instead.
+
+        -->
+        <!-- # Text -->
+        <div>
+            <input v-model="message" placeholder="edit me">
+            <p>Message is: {{ message }}</p>
+        </div>
+
+        <!-- # Multiline Text -->
+        <div>
+            <span>Multiline message is:</span>
+            <p style="white-space: pre-line;">{{ message }}</p>
+            <br>
+            <textarea v-model="message" placeholder="add multiple lines"></textarea>
+            <!-- *** Interpolation on textareas (<textarea>{{text}}</textarea>) won't work. Use v-model instead. -->
+        </div>
+
+        <!-- # Checkbox -->
+        <!-- Single checkbox, boolean value: -->
+        <div>
+            <input type="checkbox" id="checkbox" v-model="checked">
+            <label for="checkbox">{{ checked }}</label>
+        </div>
+        
+        
+        <!-- Multiple checkboxes, bound to the same Array -->
+        <div>
+            <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+            <label for="jack">Jack</label>
+            <input type="checkbox" id="john" value="John" v-model="checkedNames">
+            <label for="john">John</label>
+            <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+            <label for="mike">Mike</label>
+            <br>
+            <span>Checked names: {{ checkedNames }}</span>
+        </div>
+        
+        <!-- # Radio -->
+        <div>
+            <input type="radio" id="one" value="One" v-model="picked">
+            <label for="one">One</label>
+            <br>
+            <input type="radio" id="two" value="Two" v-model="picked">
+            <label for="two">Two</label>
+            <br>
+            <span>Picked: {{ picked }}</span>
+        </div>
+        
+        <!-- # Select -->
+        <div>
+            <select v-model="selected">
+                <option disabled value="">Please select one</option>
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+            </select>
+            <span>Selected: {{ selected }}</span>
+        </div>
+
+    </div>
+
+
+    <script>
+        vm = new Vue({
+            el: '#app',
+            data: {
+                message: null,
+                checked: false,
+                checkedNames: [],
+                picked: null,
+                selected: null
+            }
+        });
+
+    </script>
+
+</body>
+</html>
