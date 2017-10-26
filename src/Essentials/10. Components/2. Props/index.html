@@ -9,22 +9,40 @@
     </style>
 </head>
 <body>
-    <!-- Guided from  -->
-
-    <div id="app">
-        
-
-    </div>
+    <!-- Guided from https://vuejs.org/v2/guide/components.html#Props -->
 
 
-    <script>
-        vm = new Vue({
-            el: '#app',
-            data: {
-            }
+
+    <!-- # Passing Data with Props -->
+    <!-- Every component instance has its own *isolated scope*.
+         This means you cannot (and should not) directly reference parent data in a child component’s template.
+         Data can be passed down to child components using props.
+    -->
+<div id="app">
+    <child message="hello!"></child>
+</div>
+    
+
+<script>
+    // A prop is a custom attribute for passing information from parent components. 
+    // A child component needs to explicitly declare the props it expects to receive using the props option
+    Vue.component('child',
+        {
+            // declare the props
+            props: ['message'],
+            // like data, the prop can be used inside templates and
+            // is also made available in the vm as this.message
+            template: '<span>{{ message }}</span>'
         });
 
-    </script>
+
+    vm = new Vue({
+        el: '#app'
+    });
+
+</script>
+
+
 
 </body>
 </html>
