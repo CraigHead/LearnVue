@@ -1,30 +1,262 @@
 ﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
     <title>My first Vue app</title>
-    <script src="../scripts/vue.js"></script>
+    <script src="https://unpkg.com/vue"></script>
     <style type="text/css">
     </style>
 </head>
+
 <body>
-    <!-- Guided from  -->
+    <!-- Guided from https://vuejs.org/v2/guide/components.html#Custom-Events -->
+    <!-- We have learned that the parent can pass data down to the child using props, but how do we communicate back to the parent when something happens? 
+         This is where Vue’s custom event system comes in. -->
 
-    <div id="app">
-        
+    <!-- # Using v-on with Custom Events -->
 
+    <!-- Every Vue instance implements an events interface, which means it can: -->
+
+    <!-- 
+        * Listen to an event using $on(eventName)
+        * Trigger an event using $emit(eventName) 
+    -->
+
+    <!-- *** Note that Vue’s event system is different from the browser’s EventTarget API. 
+             Though they work similarly, $on and $emit are not aliases for addEventListener and dispatchEvent. -->
+
+    <!-- In addition, a parent component can listen to the events emitted from a child component using v-on directly in the template where the child component is used. 
+             You cannot use $on to listen to events emitted by children. 
+             You must use v-on directly in the template, as in the example below. -->
+    <div id="counter-event-example">
+        <p>{{ total }}</p>
+        <button-counter v-on:increment="incrementTotal"></button-counter>
+        <button-counter v-on:increment="incrementTotal"></button-counter>
     </div>
 
-
     <script>
-        vm = new Vue({
-            el: '#app',
+        Vue.component('button-counter', {
+            template: '<button v-on:click="incrementCounter">{{ counter }}</button>',
+            data: function () {
+                return {
+                    counter: 0
+                }
+            },
+            methods: {
+                incrementCounter: function () {
+                    this.counter += 1
+                    this.$emit('increment')
+                }
+            },
+        });
+
+        new Vue({
+            el: '#counter-event-example',
             data: {
+                total: 0
+            },
+            methods: {
+                incrementTotal: function () {
+                    this.total += 1
+                }
             }
         });
 
     </script>
 
+    <!-- In this example, it’s important to note that the child component is still completely decoupled from what happens outside of it. 
+         All it does is report information about its own activity, just in case a parent component might care. -->
+
+    <!-- # Binding Native Events to Components -->
+
+    <!-- There may be times when you want to listen for a native event on the root element of a component. 
+         In these cases, you can use the .native modifier for v-on. 
+
+         For Example:
+         <my-component v-on:click.native="doTheThing"></my-component> -->
+
+    <!-- # .sync Modifier -->
+
+    <!-- 
+        In some cases we may need “two-way binding” for a prop - in fact, in Vue 1.x this is exactly what the .sync modifier provided. 
+        When a child component mutates a prop that has .sync, the value change will be reflected in the parent. 
+        This is convenient, however it leads to maintenance issues in the long run because it breaks the one-way data flow assumption: the code that mutates child props are implicitly affecting parent state.
+
+        * This is why we removed the .sync modifier when 2.0 was released. 
+        However, we’ve found that there are indeed cases where it could be useful, especially when shipping reusable components. 
+        What we need to change is making the code in the child that affects parent state more consistent and explicit. -->
+
+    <!-- 
+            In 2.3.0+ we re-introduced the .sync modifier for props, but this time it is only syntax sugar that automatically expands into an additional v-on listener 
+            The following:
+
+            <comp :foo.sync="bar"></comp>
+
+            is expanded into
+
+            <comp :foo="bar" @update:foo="val => bar = val"></comp>
+
+            For the child component to update foo‘s value, it needs to explicitly emit an event instead of mutating the prop:
+            
+            this.$emit('update:foo', newValue)
+        -->
+
+    <!-- # Form Input Components using Custom Events -->
+
+    <!-- 
+            Custom events can also be used to create custom inputs that work with v-model. 
+            Remember:
+
+                <input v-model="something">
+
+            is syntactic sugar for:
+
+                <input v-bind:value="something" v-on:input="something = $event.target.value">
+
+            When used with a component, it instead simplifies to:
+
+                <custom-input :value="something" @input="value => { something = value }"></custom-input>
+
+            So for a component to work with v-model, it should:
+
+                * accept a value prop
+                * emit an input event with the new value
+        -->
+    <!-- Let’s see it in action with a simple currency input: -->
+
+    <div id="app2">
+        <currency-input-simple v-model="price"></currency-input>
+    </div>
+    <script>
+        Vue.component('currency-input-simple', {
+            template: '\
+                <span>\
+                $\
+                <input\
+                    ref="input"\
+                    v-bind:value="value"\
+                    v-on:input="updateValue($event.target.value)">\
+                </span>\
+            ',
+            props: ['value'],
+            methods: {
+                // Instead of updating the value directly, this
+                // method is used to format and place constraints
+                // on the input's value
+                updateValue: function (value) {
+                    var formattedValue = value
+                        // Remove whitespace on either side
+                        .trim()
+                        // Shorten to 2 decimal places
+                        .slice(
+                        0,
+                        value.indexOf('.') === -1
+                            ? value.length
+                            : value.indexOf('.') + 3
+                        )
+                    // If the value was not already normalized,
+                    // manually override it to conform
+                    if (formattedValue !== value) {
+                        this.$refs.input.value = formattedValue
+                    }
+                    // Emit the number value through the input event
+                    this.$emit('input', Number(formattedValue))
+                }
+            }
+        });
+
+
+        new Vue({
+            el: '#app2',
+            data: { price: null }
+        });
+    </script>
+
+    <!-- 
+        The implementation above is pretty naive though. 
+        For example, users are allowed to enter multiple periods and even letters sometimes - yuck! 
+        So for those that want to see a non-trivial example, here’s a more robust currency filter -->
+    <script src="https://cdn.rawgit.com/chrisvfritz/5f0a639590d6e648933416f90ba7ae4e/raw/974aa47f8f9c5361c5233bd56be37db8ed765a09/currency-validator.js"></script>
+
+    <div id="app3">
+        <currency-input label="Price" v-model="price"></currency-input>
+        <currency-input label="Shipping" v-model="shipping"></currency-input>
+        <currency-input label="Handling" v-model="handling"></currency-input>
+        <currency-input label="Discount" v-model="discount"></currency-input>
+
+        <p>Total: ${{ total }}</p>
+    </div>
+    <script>
+        Vue.component('currency-input', {
+            template: '\
+    <div>\
+      <label v-if="label">{{ label }}</label>\
+      $\
+      <input\
+        ref="input"\
+        v-bind:value="value"\
+        v-on:input="updateValue($event.target.value)"\
+        v-on:focus="selectAll"\
+        v-on:blur="formatValue"\
+      >\
+    </div>\
+  ',
+            props: {
+                value: {
+                    type: Number,
+                    default: 0
+                },
+                label: {
+                    type: String,
+                    default: ''
+                }
+            },
+            mounted: function () {
+                this.formatValue()
+            },
+            methods: {
+                updateValue: function (value) {
+                    var result = currencyValidator.parse(value, this.value)
+                    if (result.warning) {
+                        this.$refs.input.value = result.value
+                    }
+                    this.$emit('input', result.value)
+                },
+                formatValue: function () {
+                    this.$refs.input.value = currencyValidator.format(this.value)
+                },
+                selectAll: function (event) {
+                    // Workaround for Safari bug
+                    // http://stackoverflow.com/questions/1269722/selecting-text-on-focus-using-jquery-not-working-in-safari-and-chrome
+                    setTimeout(function () {
+                        event.target.select()
+                    }, 0)
+                }
+            }
+        });
+
+        new Vue({
+            el: '#app3',
+            data: {
+                price: 0,
+                shipping: 0,
+                handling: 0,
+                discount: 0
+            },
+            computed: {
+                total: function () {
+                    return ((
+                        this.price * 100 +
+                        this.shipping * 100 +
+                        this.handling * 100 -
+                        this.discount * 100
+                    ) / 100).toFixed(2)
+                }
+            }
+        });
+    </script>
 </body>
+
 </html>
