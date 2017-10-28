@@ -257,6 +257,63 @@
             }
         });
     </script>
+
+    <!-- # Customizing Component v-model -->
+
+    <!-- 
+        By default, v-model on a component uses value as the prop and input as the event, but some input types such as checkboxes and radio buttons may want to use the value prop for a different purpose. 
+        Using the model option can avoid the conflict in such cases 
+    -->
+
+    <div id="app4">
+        <my-checkbox v-model="foo" value="some value" @input="val => { foo = val }"></my-checkbox>
+        {{ foo }}
+    </div>
+
+    <script>
+        Vue.component('my-checkbox', {
+            template: '<span><input type="checkbox" id="checkbox" :checked="checked" @change="$emit(\'input\', $event.target.checked )"><label>{{ value }}</label></span>',
+            model: {
+                prop: 'checked',
+                event: 'change'
+            },
+            props: {
+                checked: Boolean,
+                // this allows using the `value` prop for a different purpose
+                value: String
+            },
+            methods: {
+                update: function (onChangedArgs) {
+                    this.$emit('checked', onChangedArgs);
+                }
+            }
+        });
+
+        new Vue({
+            el: "#app4",
+            data: { foo: true }
+        });
+    </script>
+
+    
+    <script>
+
+        // Sometimes two components may need to communicate with one-another but they are not parent/child to each other. 
+        // In simple scenarios, you can use an empty Vue instance as a central event bus 
+        var bus = new Vue();
+
+        // in component A's method
+        bus.$emit('id-selected', 1);
+
+        // in component B's created hook
+        bus.$on('id-selected', function (id) {
+        // ...
+        })
+
+        // In more complex cases, you should consider employing a dedicated state-management pattern. See: https://vuejs.org/v2/guide/state-management.html
+        
+    </script>
+
 </body>
 
 </html>
