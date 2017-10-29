@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
     <title>My first Vue app</title>
@@ -8,23 +9,292 @@
     <style type="text/css">
     </style>
 </head>
-<body>
-    <!-- Guided from  -->
 
-    <div id="app">
+<body>
+    <!-- Guided from https://vuejs.org/v2/guide/components.html#Content-Distribution-with-Slots  -->
+
+    <!-- 
+        When using components, it is often desired to compose them like this:
+
+        <app>
+            <app-header></app-header>
+            <app-footer></app-footer>
+        </app>
+
+        There are two things to note here:
+            1. The <app> component does not know what content it will receive. It is decided by the component using <app>.
+            2. The <app> component very likely has its own template.
+
+        To make the composition work, we need a way to interweave the parent “content” and the component’s own template. 
+        This is a process called content distribution (or “transclusion” if you are familiar with Angular). 
+        Vue.js implements a content distribution API that is modeled after the current Web Components spec draft, using the special <slot> element to serve as distribution outlets for the original content.
+     -->
+
+    <!--  
+        # Compilation Scope
+
+        Before we dig into the API, let’s first clarify which scope the contents are compiled in. 
+        Imagine a template like this:
+
+        <child-component>
+            {{ message }}
+        </child-component>
+
+        Should the message be bound to the parent’s data or the child data? 
+        The answer is the parent. 
         
+        A simple rule of thumb for component scope is
+            |
+            | Everything in the parent template is compiled in parent scope; everything in the child template is compiled in child scope.
+            |
+
+        A common mistake is trying to bind a directive to a child property/method in the parent template
+        
+        this does NOT work:
+        <child-component v-show="someChildProperty"></child-component>
+
+        Assuming someChildProperty is a property on the child component, the example above would not work. 
+        The parent’s template is not aware of the state of a child component.
+
+        If you need to bind child-scope directives on a component root node, you should do so in the child component’s own template:
+        Vue.component('child-component', {
+            // this does work, because we are in the right scope
+            template: '<div v-show="someChildProperty">Child</div>',
+            data: function () {
+                return {
+                someChildProperty: true
+                }
+            }
+        });
+
+        Similarly, distributed content will be compiled in the parent scope.
+    -->
+
+    <div id="app1">
+
+        <!-- # Single Slot -->
+
+
+        <!-- 
+            Parent content will be discarded unless the child component template contains at least one <slot> outlet. 
+            When there is only one slot with no attributes, the entire content fragment will be inserted at its position in the DOM, replacing the slot itself.
+
+            Anything originally inside the <slot> tags is considered fallback content. 
+            Fallback content is compiled in the child scope and will only be displayed if the hosting element is empty and has no content to be inserted.
+
+            Suppose we have a component called my-component with the following template 
+
+            <div>
+            <h2>I'm the child title</h2>
+            <slot>
+                This will only be displayed if there is no content
+                to be distributed.
+            </slot>
+            </div>
+        -->
+
+        <div>
+            <h1>I'm the parent title</h1>
+            <my-component>
+                <p>This is some original content</p>
+                <p>This is some more original content</p>
+            </my-component>
+            <my-component></my-component>
+        </div>
+
 
     </div>
 
 
     <script>
-        vm = new Vue({
-            el: '#app',
+
+        Vue.component('my-component', {
+            template: '\
+                <div>\
+                    <h2>I\'m the child title</h2>\
+                    <slot>\
+                        This will only be displayed if there is no content\
+                        to be distributed.\
+                    </slot>\
+                </div>'
+        });
+
+        new Vue({
+            el: '#app1',
             data: {
             }
         });
 
     </script>
 
+    <div id="app2">
+
+        <!-- # Named Slots -->
+        <!-- 
+
+        <slot> elements have a special attribute, name, which can be used to further customize how content should be distributed. 
+        You can have multiple slots with different names. 
+        A named slot will match any element that has a corresponding slot attribute in the content fragment.
+
+        There can still be one unnamed slot, which is the default slot that serves as a catch-all outlet for any unmatched content. 
+        If there is no default slot, unmatched content will be discarded.
+        
+        -->
+
+        <!-- For example, suppose we have an app-layout component with the following template -->
+
+        <!-- 
+                <div class="container">
+                    <header>
+                        <slot name="header"></slot>
+                    </header>
+                    <main>
+                        <slot></slot>
+                    </main>
+                    <footer>
+                        <slot name="footer"></slot>
+                    </footer>
+                </div>
+
+         -->
+        <app-layout>
+            <h1 slot="header">Here might be a page title</h1>
+            <p>A paragraph for the main content.</p>
+            <p>And another one.</p>
+            <p slot="footer">Here's some contact info in the footer</p>
+        </app-layout>
+    </div>
+
+    <script>
+        Vue.component('app-layout', {
+            template: '\
+            <div class="container">\
+                <header>\
+                    <slot name="header"></slot>\
+                </header>\
+                <main>\
+                    <slot></slot>\
+                </main>\
+                <footer>\
+                    <slot name="footer"></slot>\
+                </footer>\
+            </div>'
+        });
+
+        new Vue({
+            el: '#app2',
+        });
+    </script>
+
+    <!-- The content distribution API is a very useful mechanism when designing components that are meant to be composed together. -->
+
+    <div id="app3">
+        <!-- # Scoped Slots -->
+
+        <!-- 
+            A scoped slot is a special type of slot that functions as a reusable template (that can be passed data to) instead of already-rendered-elements.
+
+            <div class="child">
+                <slot text="hello from child"></slot>
+            </div>
+        -->
+
+        <div class="parent">
+            <child>
+                <template slot-scope="props">
+                    <span>hello from parent</span>
+                    <span>{{ props.text }}</span>
+                </template>
+            </child>
+        </div>
+
+    </div>
+    <script>
+        Vue.component('child', {
+            template: '\
+                <div class="child">\
+                    <slot text="hello from child"></slot>\
+                </div>'
+        });
+
+        new Vue({
+            el: '#app3',
+        });
+    </script>
+
+    <!--  
+        ** In 2.5.0+, slot-scope is no longer limited to <template> and can be used on any element or component.
+    -->
+
+    <div id="app4">
+        <!-- 
+            A more typical use case for scoped slots would be a list component that allows the component consumer to customize how each item in the list should be rendered
+         -->
+
+        <my-awesome-list :items="items">
+            <!-- scoped slot can be named too -->
+            <li slot="item" slot-scope="props" class="my-fancy-item">
+                {{ props.text }}
+            </li>
+        </my-awesome-list>
+
+        <my-awesome-list></my-awesome-list>
+
+    </div>
+
+    <script>
+        Vue.component('my-awesome-list', {
+            props: {
+                items: {
+                    type: Array,
+                    default: function () { return [''] }
+                }
+            },
+
+            template: '\
+                    <ul>\
+                        <slot name="item"\
+                          v-for="item in items"\
+                          :text="item.text">\
+                          <!-- fallback content here -->\
+                          <li>None</li>\
+                        </slot>\
+                      </ul>'
+        });
+
+        new Vue({
+            el: '#app4',
+            data: {
+                items: [
+                    {
+                        text: "one",
+                    },
+                    {
+                        text: "two",
+                    },
+                    {
+                        text: "three",
+                    },
+                ]
+            }
+        });
+    </script>
+
+    <!-- # Destructuring -->
+
+    <!-- 
+        slot-scope's value is in fact a valid JavaScript expression that can appear in the argument position of a function signature. 
+        This means in supported environments (in single-file components or in modern browsers) you can also use ES2015 destructuring in the expression: 
+
+        <child>
+          <span slot-scope="{ text }">{{ text }}</span>
+        </child>
+    -->
+
+<child>
+  <span slot-scope="{ text }">{{ text }}</span>
+</child> -->
+
 </body>
+
 </html>
