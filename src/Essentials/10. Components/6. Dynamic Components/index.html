@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
     <title>My first Vue app</title>
@@ -8,23 +9,103 @@
     <style type="text/css">
     </style>
 </head>
+
 <body>
-    <!-- Guided from  -->
+    <!-- Guided from https://vuejs.org/v2/guide/components.html#Dynamic-Components -->
 
-    <div id="app">
-        
-
+    <!-- 
+        You can use the same mount point and dynamically switch between multiple components using the reserved <component> element and dynamically bind to its is attribute
+     -->
+    <div id="app1">
+        <component v-bind:is="currentView">
+            <!-- component changes when vm.currentView changes! -->
+        </component>
     </div>
 
 
     <script>
         vm = new Vue({
-            el: '#app',
+            el: '#app1',
             data: {
+                currentView: 'home'
+            },
+            components: {
+                home: { template: '<div>home custom component!</div>' },
+                posts: { template: '<div>posts custom component!</div>' },
+                archive: { template: '<div>archive custom component!</div>' }
             }
         });
 
     </script>
 
+    <!-- If you prefer, you can also bind directly to component objects: -->
+    <div id="app2">
+        <component v-bind:is="currentView">
+            <!-- component changes when vm.currentView changes! -->
+        </component>
+    </div>
+
+
+    <script>
+        var Home = {
+            template: '<p>Welcome home!</p>'
+        }
+
+        var vm = new Vue({
+            el: '#app2',
+            data: {
+                currentView: Home
+            }
+        })
+
+    </script>
+
+    <div id="app3">
+        <keep-alive>
+            <component :is="currentView">
+                <!-- inactive components will be cached! -->
+            </component>
+        </keep-alive>
+        <component :is="currentView">
+            <!-- inactive components will not be cached! -->
+        </component>
+    </div>
+
+    <script>
+        vm = new Vue({
+            el: '#app3',
+            data: {
+                currentView: 'home'
+            },
+            components: {
+                home: {
+                    template: '<div>home custom component! <button v-on:click="counter += 1">{{ counter }}</button></div>',
+                    data: function () {
+                        return {
+                            counter: 0
+                        }
+                    }
+                },
+                posts: {
+                    template: '<div>posts custom component!  <button v-on:click="counter += 1">{{ counter }}</button></div>',
+                    data: function () {
+                        return {
+                            counter: 0
+                        }
+                    }
+                },
+                archive: {
+                    template: '<div>archive custom component! <button v-on:click="counter += 1">{{ counter }}</button></div>',
+                    data: function () {
+                        return {
+                            counter: 0
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
 </body>
+
 </html>
